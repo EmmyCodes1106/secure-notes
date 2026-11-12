@@ -15,31 +15,45 @@ export default function EditForm({
   )
 
   return (
-    <form action={action} className="mb-6 flex flex-col gap-3">
-      <input
-        name="title"
-        type="text"
-        defaultValue={note.title}
-        className="rounded border p-2 text-black"
-      />
-      <textarea
-        name="body"
-        rows={6}
-        defaultValue={note.body}
-        className="rounded border p-2 text-black"
-      />
+    <form action={action} className="flex flex-col gap-5">
+      <div>
+        <label htmlFor="title" className="mb-1.5 block text-sm font-medium">
+          Title
+        </label>
+        <input
+          id="title"
+          name="title"
+          type="text"
+          maxLength={200}
+          defaultValue={note.title}
+          className="input"
+        />
+      </div>
 
-      {state?.error && <p className="text-red-500">{state.error}</p>}
+      <div>
+        <label htmlFor="body" className="mb-1.5 block text-sm font-medium">
+          Note
+        </label>
+        <textarea
+          id="body"
+          name="body"
+          rows={14}
+          defaultValue={note.body}
+          className="input"
+        />
+      </div>
+
+      {state?.error && (
+        <p role="alert" className="text-sm text-danger">
+          {state.error}
+        </p>
+      )}
 
       <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
-        >
+        <button type="submit" disabled={pending} className="btn-primary">
           {pending ? 'Saving...' : 'Save changes'}
         </button>
-        <Link href="/" className="rounded border px-4 py-2">
+        <Link href="/notes" className="btn-secondary">
           Cancel
         </Link>
       </div>
