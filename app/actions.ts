@@ -37,7 +37,7 @@ export async function createNote(
   if (error) return { error: 'Could not save the note. Try again.' }
 
   revalidatePath('/')
-  return null
+  redirect('/notes')
 }
 
 export async function updateNote(
@@ -66,7 +66,7 @@ export async function updateNote(
     return { error: 'Could not save the changes.' }
 
   revalidatePath('/')
-  redirect('/')
+ redirect('/notes')
 }
 
 export async function deleteNote(id: number) {
@@ -76,5 +76,5 @@ export async function deleteNote(id: number) {
   await supabase.from('notes').delete().eq('id', id)
 
   revalidatePath('/')
-  redirect('/')
+  redirect('/notes')
 }
