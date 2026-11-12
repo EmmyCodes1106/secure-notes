@@ -30,11 +30,16 @@ export default async function EditNotePage({
   // If this note belongs to someone else, row-level security returns nothing
   const { data: note } = await supabase
     .from('notes')
-    .select('id, title, body, created_at, updated_at')
+    .select('id, title, body, category_id, created_at, updated_at')
     .eq('id', noteId)
     .maybeSingle()
 
   if (!note) notFound()
+
+  const { data: categories } = await supabase
+    .from('note_categories')
+    .select('id, name')
+    .order('name')
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -57,7 +62,7 @@ export default async function EditNotePage({
         <DeleteNoteButton id={note.id} title={note.title} />
       </div>
 
-      <EditForm note={note} />
+      <EditForm note={note} categories={categories ?? []} />
     </div>
   )
 }

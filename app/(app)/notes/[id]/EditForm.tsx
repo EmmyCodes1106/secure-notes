@@ -4,11 +4,14 @@ import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { updateNote } from '@/app/actions'
 import WordCount from '@/components/WordCount'
+import CategorySelect, { type Category } from '@/components/CategorySelect'
 
 export default function EditForm({
   note,
+  categories,
 }: {
-  note: { id: number; title: string; body: string }
+  note: { id: number; title: string; body: string; category_id: number | null }
+  categories: Category[]
 }) {
   const [state, action, pending] = useActionState(
     updateNote.bind(null, note.id),
@@ -16,6 +19,9 @@ export default function EditForm({
   )
   const [title, setTitle] = useState(note.title)
   const [body, setBody] = useState(note.body)
+  const [category, setCategory] = useState(
+    note.category_id === null ? '' : String(note.category_id)
+  )
 
   return (
     <form action={action} className="flex flex-col gap-5">
@@ -33,6 +39,12 @@ export default function EditForm({
           className="input"
         />
       </div>
+
+      <CategorySelect
+        categories={categories}
+        value={category}
+        onChange={setCategory}
+      />
 
       <div>
         <label htmlFor="body" className="mb-1.5 block text-sm font-medium">

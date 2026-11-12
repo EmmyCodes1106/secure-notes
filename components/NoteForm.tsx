@@ -4,11 +4,13 @@ import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { createNote } from '@/app/actions'
 import WordCount from './WordCount'
+import CategorySelect, { type Category } from './CategorySelect'
 
-export default function NoteForm() {
+export default function NoteForm({ categories }: { categories: Category[] }) {
   const [state, action, pending] = useActionState(createNote, null)
   const [title, setTitle] = useState('')
   const [body, setBody] = useState('')
+  const [category, setCategory] = useState('')
 
   return (
     <form action={action} className="flex flex-col gap-5">
@@ -27,6 +29,12 @@ export default function NoteForm() {
           className="input"
         />
       </div>
+
+      <CategorySelect
+        categories={categories}
+        value={category}
+        onChange={setCategory}
+      />
 
       <div>
         <label htmlFor="body" className="mb-1.5 block text-sm font-medium">
