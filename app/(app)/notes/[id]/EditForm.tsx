@@ -1,8 +1,9 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { updateNote } from '@/app/actions'
+import WordCount from '@/components/WordCount'
 
 export default function EditForm({
   note,
@@ -13,6 +14,8 @@ export default function EditForm({
     updateNote.bind(null, note.id),
     null
   )
+  const [title, setTitle] = useState(note.title)
+  const [body, setBody] = useState(note.body)
 
   return (
     <form action={action} className="flex flex-col gap-5">
@@ -25,7 +28,8 @@ export default function EditForm({
           name="title"
           type="text"
           maxLength={200}
-          defaultValue={note.title}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           className="input"
         />
       </div>
@@ -38,9 +42,13 @@ export default function EditForm({
           id="body"
           name="body"
           rows={14}
-          defaultValue={note.body}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
           className="input"
         />
+        <div className="mt-1.5">
+          <WordCount text={body} />
+        </div>
       </div>
 
       {state?.error && (

@@ -1,11 +1,14 @@
 'use client'
 
-import { useActionState } from 'react'
+import { useActionState, useState } from 'react'
 import Link from 'next/link'
 import { createNote } from '@/app/actions'
+import WordCount from './WordCount'
 
 export default function NoteForm() {
   const [state, action, pending] = useActionState(createNote, null)
+  const [title, setTitle] = useState('')
+  const [body, setBody] = useState('')
 
   return (
     <form action={action} className="flex flex-col gap-5">
@@ -18,6 +21,8 @@ export default function NoteForm() {
           name="title"
           type="text"
           maxLength={200}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           placeholder="e.g. Tolu, maths"
           className="input"
         />
@@ -31,9 +36,14 @@ export default function NoteForm() {
           id="body"
           name="body"
           rows={12}
+          value={body}
+          onChange={(e) => setBody(e.target.value)}
           placeholder="Write your note..."
           className="input"
         />
+        <div className="mt-1.5">
+          <WordCount text={body} />
+        </div>
       </div>
 
       {state?.error && (
