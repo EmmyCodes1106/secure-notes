@@ -3,14 +3,28 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
-import { FileText, LayoutDashboard, LogOut, Menu, NotebookPen, X, Settings } from 'lucide-react'
+import {
+  Archive,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  NotebookPen,
+  Pin,
+  Settings,
+  Tags,
+  X,
+} from 'lucide-react'
 import ThemeToggle from './ThemeToggle'
 import { logout } from '@/app/actions'
 
 const links = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/notes', label: 'All Notes', icon: FileText },
-    { href: '/settings', label: 'Settings', icon: Settings },
+  { href: '/pinned', label: 'Pinned', icon: Pin },
+  { href: '/categories', label: 'Categories', icon: Tags },
+  { href: '/archive', label: 'Archive', icon: Archive },
+  { href: '/settings', label: 'Settings', icon: Settings },
 ]
 
 export default function AppShell({

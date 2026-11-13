@@ -28,16 +28,19 @@ export default async function NotesPage({
 
   const supabase = await createClient()
 
-  let query = supabase
+ let query = supabase
     .from('notes')
-    .select('id, title, body, created_at, updated_at')
+    .select('id, title, body, category_id, pinned, archived, created_at, updated_at')
+    .eq('archived', false)
 
   if (q) {
     query = query.or(`title.ilike."%${q}%",body.ilike."%${q}%"`)
   }
 
   const { column, ascending } = SORTS[sort]
-  const { data: notes } = await query.order(column, { ascending })
+ const { data: notes } = await query
+    .order('pinned', { ascending: false })
+    .order(column, { ascending })
 
   return (
     <div>

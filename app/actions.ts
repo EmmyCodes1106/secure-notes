@@ -4,11 +4,19 @@ import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { SUGGESTED_CATEGORIES } from '@/lib/suggested-categories'
+import { VAULT_COOKIE } from '@/lib/supabase/vault'
+import { cookies } from 'next/headers'
 
 export type NoteFormState = { error: string } | null
 
 export async function logout() {
   const supabase = await createClient()
+
+  // Lock the vault first, while we're still logged in
+  await supabase.rpc('vault_lock')
+  const cookieStore = await cookies()
+  cookieStore.delete(VAULT_COOKIE)
+
   await supabase.auth.signOut()
   redirect('/login')
 }
@@ -145,6 +153,31 @@ export async function addSuggestedCategories() {
   if (missing.length > 0) {
     await supabase.from('note_categories').insert(missing)
   }
+
+  revalidatePath('/', 'layout')
+}
+
+export async function setPinned(id: number, pinned: boolean) {
+  if (!Number.isInteger(id)) return
+
+  const supabase = await createClient()
+
+  // Row-level security makes sure this can only touch the user's own notes
+  await supabase.from('notes').update({ pinned }).eq('id', id)
+
+  revalidatePath('/', 'layout')
+}
+
+export async function setArchived(id: number, archived: boolean) {
+  if (!Number.isInteger(id)) return
+
+  const supabase = await createClient()
+
+  // Archiving also unpins; restoring leaves the note unpinned
+  await supabase
+    .from('notes')
+    .update(archived ? { archived: true, pinned: false } : { archived: false })
+    .eq('id', id)
 
   revalidatePath('/', 'layout')
 }

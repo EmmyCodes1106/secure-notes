@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Secure Notes",
   description: "Private teaching notes for tutors.",
 };
 
-// Runs before the page paints, so the wrong theme never flashes
+// Runs before the page is interactive, so the wrong theme never flashes
 const themeScript = `
 (function () {
   try {
@@ -29,10 +24,14 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
-      <body className={`${geistSans.variable} antialiased`}>{children}</body>
+      <body className="antialiased">
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
